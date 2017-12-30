@@ -16,7 +16,32 @@ unsigned int instMap;
 unsigned int rpmVal;
 double mapVal=1000;
 LambdaSensor narrowLambda1(PA_0); //this value is acquired in the pack data routine!
+Serial pc(PA_2, PA_3, 9600); //Out to FTDI
+Serial bt(PA_9, PA_10, 9600); //Out to BT module
 
+void configureBTModule(Serial &pc, Serial &bt)
+{
+    if(CAL_TACHO){setupCalibration((int) 5);}
+    //DigitalOut  myled(LED1);
+    bt.baud(9600);
+    /* configure the CC41-A bluetooth module*/
+    //bt.printf("AT\r\n");
+    //bt.printf("AT+NAMEGPZ Logger\r\n");
+}
+void sendBTData(Serial &bt, Serial &pc)
+{
+    char sendOverBt[21]; // we are limited to 20 bytes for a BLE transaction (21 when you include the \n)
+    packData(sendOverBt); // pack the data efficiently into this array to be sent over BT
+    for(int i = 0; i<20; i++)
+    {
+        bt.printf("%c" ,sendOverBt[i]);   
+    }    
+    if (bt.readable() && DEBUG_PC)
+    {
+        // put a byte out to the FTDI chip from a received byte from the BT module
+        pc.putc(bt.getc());
+    }        
+}
 void milliSecTask(void)
 {
 // this code will run every millisecond
@@ -39,8 +64,7 @@ void secTask(void)
 int main() 
 {
     confSysClock();     //Configure system clock (72MHz HSE clock, 48MHz USB clock)    
-    Serial      pc(PA_2, PA_3, 9600); //Out to FTDI
-    Serial      bt(PA_9, PA_10, 9600); //Out to BT module
+
     configureBTModule(pc,bt);
 
     myled=LED_OFF;
@@ -104,26 +128,5 @@ void packData(char btData[])
     btData[19] = 0x3; //<ETX>
     btData[20] = 0xA; //(Line feed does not count as part of our alloted BLE bytes)
 }
-void sendBTData(Serial &bt, Serial &pc)
-{
-    char sendOverBt[21]; // we are limited to 20 bytes for a BLE transaction (21 when you include the \n)
-    packData(sendOverBt); // pack the data efficiently into this array to be sent over BT
-    for(int i = 0; i<20; i++)
-    {
-        bt.printf("%c" ,sendOverBt[i]);   
-    }    
-    if (bt.readable() && DEBUG_PC)
-    {
-        // put a byte out to the FTDI chip from a received byte from the BT module
-        pc.putc(bt.getc());
-    }        
-}
-void configureBTModule(Serial &pc, Serial &bt)
-{
-    if(CAL_TACHO){setupCalibration((int) 5);}
-    //DigitalOut  myled(LED1);
-    bt.baud(9600);
-    /* configure the CC41-A bluetooth module*/
-    //bt.printf("AT\r\n");
-    //bt.printf("AT+NAMEGPZ Logger\r\n");
-}
+
+

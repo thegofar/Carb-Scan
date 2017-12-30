@@ -1,0 +1,4 @@
+[ui]
+ignore.local = .hg/hgignore
+[paths]
+default = http://mbed.org/users/hudakz/code/mbed-STM32F103C8T6/

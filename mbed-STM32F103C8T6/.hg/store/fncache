@@ -1,0 +1,5 @@
+data/stm32f103c8t6.h.i
+data/SysClockConf.cpp.i
+data/PinNames.h.i
+data/SysClockConf.h.i
+data/PinNames.h.orig.i

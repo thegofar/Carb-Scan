@@ -12,13 +12,12 @@ class LambdaSensor {
     LamState mMixture;
     Sensor mSensor;
         
-    public:
+public:
     LambdaSensor(PinName pin, Sensor sensor=SINGLE_WIRE, bool fake=false);
     void setSensor(Sensor sensor);
     char getFixedPtVolts();
     
-    private:
-    //void LambdaSensor :: acquire();
+private:
     void acquire();
 };
 

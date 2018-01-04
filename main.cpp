@@ -1,5 +1,5 @@
 #include "stm32f103c8t6.h"
-#include "carbScan.h"
+#include "CarbScan.h"
 #include "LambdaSensor.h"
 #include "mbed.h"
 #include <string>
@@ -8,7 +8,11 @@ Ticker ms_tick;
 Ticker hundredMs_tick;
 Ticker sec_tick;
 
-const unsigned int MAP_AVG_N_SAMPLES = 100;
+bool getAnalogueRPM=false;
+bool getInstMap=false;
+bool sendOverBT=false;
+
+char MAP_AVG_N_SAMPLES = 50; //TODO make this calibratable over BT
 unsigned int timeStamp = 0;
 DigitalOut  myled(LED1);
 
@@ -44,17 +48,21 @@ void sendBTData(Serial &bt, Serial &pc)
 }
 void milliSecTask(void)
 {
-// this code will run every millisecond
+/*********************************************************************
+* This function is called every millisecond, keep all computation in 
+* this IRQ context minimal to avoid blocking the user context 'main'
+**********************************************************************/
     timeStamp++;
-    instMap=getManifoldPressure(FAKE_DATA_ACQ,10);
-    rollAvg(mapVal,(double)instMap, MAP_AVG_N_SAMPLES);
+    getInstMap=true;
 }
 void hundredMilliSecTask(void)
 {
-    //this code runs every 100 msec
-    rpmVal = getEngineSpeed(FAKE_DATA_ACQ);
-    myled= !myled;
-    sendBTData(bt,pc);
+/*********************************************************************
+* This function is called every millisecond, keep all computation in 
+* this IRQ context minimal to avoid blocking the user context 'main'
+**********************************************************************/
+    getAnalogueRPM = true;
+    sendOverBT = true;
 }
 void secTask(void)
 {
@@ -64,9 +72,7 @@ void secTask(void)
 int main() 
 {
     confSysClock();     //Configure system clock (72MHz HSE clock, 48MHz USB clock)    
-
     configureBTModule(pc,bt);
-
     myled=LED_OFF;
 
     /******************************************
@@ -78,7 +84,24 @@ int main()
 
     while(1) 
     {   
-        wait((float)0.0005); // allow time to service interupts
+        //wait((float)0.0005); // allow time to service interupts
+        if(getAnalogueRPM)
+        {
+            rpmVal = getEngineSpeed(FAKE_DATA_ACQ);
+            getAnalogueRPM = true; // set this flag false and wait for interrupt
+        }
+        if(getInstMap)
+        {
+            //this gets called every millisecond
+            instMap=getManifoldPressure(FAKE_DATA_ACQ,10);
+            rollAvg(mapVal,(double)instMap, MAP_AVG_N_SAMPLES);
+            getInstMap=false; // set this flag back to false and wait for the interrupt
+        }
+        if(sendOverBT)
+        {
+            sendBTData(bt,pc);
+            myled= !myled;
+        }  
     }  
 }
 

@@ -48,12 +48,12 @@ unsigned int getManifoldPressure(int fakeData, int sampleCount)
     return manifoldPressure;
 }
 
-double rollAvg(double &avg, double newSample, unsigned int N) 
+double rollAvg(double &avg, double newSample, char N) 
 {
-    /*-------------------------------------
+    /*-----------------------------------------------------------
     TODO: This really needs to be replaced with a ring buffer
     avg as any large anomaly will persist forever
-    -------------------------------------*/
+    ------------------------------------------------------------*/
     avg -= avg / N;
     avg += newSample / N;  
 

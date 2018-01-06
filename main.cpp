@@ -3,6 +3,7 @@
 #include "LambdaSensor.h"
 #include "mbed.h"
 #include <string>
+#include "EngineSpeed.h"
 
 Ticker ms_tick;
 Ticker hundredMs_tick;
@@ -20,6 +21,8 @@ unsigned int instMap;
 unsigned int rpmVal;
 double mapVal=1000;
 LambdaSensor narrowLambda1(PA_0); //this value is acquired in the pack data routine!
+TimedInterrupt timedPulse(PB_15);
+FrequencyToVoltage lmChip(PB_1);
 Serial pc(PA_2, PA_3, 9600); //Out to FTDI
 Serial bt(PA_9, PA_10, 9600); //Out to BT module
 

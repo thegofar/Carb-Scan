@@ -1,5 +1,5 @@
 #include "mbed.h"
-#include "carbScan.h"
+#include "CarbScan.h"
 
 PwmOut calTachoPin(PB_4); //this pin is labelled B4 on LHS of the STM32
 

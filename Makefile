@@ -47,10 +47,12 @@ PROJECT := CarbScan_Controller
 # Objects and Paths
 
 OBJECTS += CalibrateTacho.o
+OBJECTS += EngineSpeed.o
 OBJECTS += LambdaSensor.o
-OBJECTS += acquireVals.o
+#OBJECTS += acquireVals.o
 OBJECTS += main.o
 OBJECTS += mbed-STM32F103C8T6/SysClockConf.o
+OBJECTS += PressureSensor.o
 
  SYS_OBJECTS += mbed/TARGET_NUCLEO_F103RB/TOOLCHAIN_GCC_ARM/stm32f1xx_hal_smartcard.o
  SYS_OBJECTS += mbed/TARGET_NUCLEO_F103RB/TOOLCHAIN_GCC_ARM/PeripheralPins.o

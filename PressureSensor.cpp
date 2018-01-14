@@ -6,7 +6,7 @@ PressureSensor::PressureSensor(PinName pin, char samplecount) : mPressureAnalogu
     mMapGain = 3297.6; //3146.7*(1027/980);
     mMapOffset = -21.836;
     mSampleCount=samplecount;
-    mTick.attach_us(callback(this,&PressureSensor::autoAcquire),100);  //100 is 1khz
+    mTick.attach_us(callback(this,&PressureSensor::autoAcquire),10000);  //100 is 1khz
 }
 
 uint16_t PressureSensor::getPressure()

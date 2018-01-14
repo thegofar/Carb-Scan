@@ -30,7 +30,7 @@ void TimedPulse::acquire()
 {
     //overrides the virtual acquire method set out in the base class
     if(usecT<1000000) //1,000,000usec = 1sec = 60RPM (wasted spark twin cylinder)
-    {mRevs = 60000000/usecT; }
+    {mRevs = 30000000/usecT; }
     else {mRevs=0;} // set the engine speed to 0 slower than 60rpm
     //TODO deal with timer wrap...
 }

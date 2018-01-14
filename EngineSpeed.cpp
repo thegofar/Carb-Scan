@@ -28,10 +28,17 @@ uint16_t TimedPulse::getEngineSpeed()
 
 void TimedPulse::acquire()
 {
+    //TODO cope with no rising edge (engine off!)
     //overrides the virtual acquire method set out in the base class
-    if(usecT<1000000) //1,000,000usec = 1sec = 60RPM (wasted spark twin cylinder)
-    {mRevs = 30000000/usecT; }
-    else {mRevs=0;} // set the engine speed to 0 slower than 60rpm
+    if (mSparkusec.read_us()>1000000)
+    {
+        //we haven't seen a rising edge for a while
+        mRevs=0;// set the engine speed to 0 slower than 60rpm
+    }
+    else 
+    {
+        mRevs = 30000000/usecT;
+    } 
     //TODO deal with timer wrap...
 }
 void TimedPulse::coilFired()

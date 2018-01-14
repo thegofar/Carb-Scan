@@ -39,7 +39,8 @@ VPATH = ..
 ###############################################################################
 # Project settings
 
-PROJECT := CarbScan_Controller
+#PROJECT := CarbScan_Controller
+PROJECT := Carb-Scan
 
 
 # Project settings

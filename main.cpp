@@ -3,6 +3,8 @@
 #include "mbed.h"
 #include <string>
 
+#define DEBUG 1
+
 Ticker ms_tick;
 Ticker hundredMs_tick;
 
@@ -15,7 +17,7 @@ DigitalOut  onBoardLED(LED1);
 LambdaSensor narrowLambda1(PA_0); 
 TimedPulse timedPulse(PB_15);
 FrequencyToVoltage lmChip(PB_1);
-PressureSensor mapSensor(PB_0);
+//PressureSensor mapSensor(PB_0);
 
 Serial pc(PA_2, PA_3, 9600); //Out to FTDI
 Serial bt(PA_9, PA_10, 9600); //Out to BT module
@@ -104,8 +106,8 @@ void packData(char btData[])
     else
     {
         rpmTim = timedPulse.getEngineSpeed();
-        map = mapSensor.getAvgPressure();
-        mapI = mapSensor.getPressure();
+        //map = mapSensor.getAvgPressure();
+        //mapI = mapSensor.getPressure();
         tS = timeStamp;
         lam = narrowLambda1.getFixedPtVolts();
         rpmLm=lmChip.getEngineSpeed();

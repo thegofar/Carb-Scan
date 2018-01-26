@@ -1,10 +1,23 @@
 #include "EngineSpeed.h"
 #include "mbed.h"
 
+EngineSpeed::EngineSpeed(PinName pin)
+{
+    mPin = pin;
+}
+uint16_t EngineSpeed::getEngineSpeed()
+{
+    return mRevs; //this will be overriden by the derived class
+}
+PinName EngineSpeed::getPin()
+{
+    return mPin;
+}
+
 /***********************************************************
  * Derived Class TimedPulse
  * ***************************************************/
-TimedPulse::TimedPulse(PinName tpPin):mPrimaryCoil(tpPin)
+TimedPulse::TimedPulse(PinName pin):EngineSpeed(pin),mPrimaryCoil(pin)
 {
      // assign the physical primary coil pin to the interrupt
     mPrimaryCoil.rise(callback(this, &TimedPulse::coilFired)); // attach increment function of this counter instance
@@ -53,16 +66,20 @@ void TimedPulse::coilFired()
 /***********************************************************
  * Derived Class FrequencyToVoltage
  * ********************************************************/
-FrequencyToVoltage::FrequencyToVoltage(PinName pin):mLmPin(pin)
+FrequencyToVoltage::FrequencyToVoltage(PinName pin,float gain,float offset,float vmult):EngineSpeed(pin),mLmPin(pin)
 {
     // some initial values to get things going ;)
-    mEngSpeedGain=4087;
-    mEngSpeedOffset=0;
+    mEngSpeedGain=gain;
+    mEngSpeedOffset=offset;
+    mVoltMult=vmult;
 }
 //TODO implement support for android calibration of these vars
-void FrequencyToVoltage::setEngSpeedGain(float gain){mEngSpeedGain=gain;}
-void FrequencyToVoltage::setEngSpeedOffset(float offset){mEngSpeedOffset=offset;}
-void FrequencyToVoltage::setVoltMult(float vmult){mEngSpeedGain=vmult;}
+void FrequencyToVoltage::configureVoltageCal(int gain, int offset, float vmult)
+{
+    mEngSpeedGain=gain;
+    mEngSpeedOffset=offset;
+    mVoltMult=vmult;
+}
 void FrequencyToVoltage::setFakeData(bool fake){mFakeData=fake;}
 
 void FrequencyToVoltage::acquire()

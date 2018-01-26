@@ -16,7 +16,7 @@ DigitalOut  onBoardLED(LED1);
 //these values are currently acquired in the pack data routine!
 LambdaSensor narrowLambda1(PA_0); 
 TimedPulse timedPulse(PB_15);
-FrequencyToVoltage lmChip(PB_1);
+FrequencyToVoltage lmChip(PB_1,4087,0);
 //PressureSensor mapSensor(PB_0);
 
 Serial pc(PA_2, PA_3, 9600); //Out to FTDI

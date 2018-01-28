@@ -53,10 +53,10 @@ void TimedPulse::acquire()
         int numerator;
         if(mWastedSpark)
         {
-            numerator=30000000;
+            numerator=30000000; // we have to only consider half the pulses genuine firing events
         }
         else{
-            numerator=60000000;
+            numerator=60000000; // every pulse is a firing event
         }
         mRevs = numerator/usecT;
     } 
@@ -69,6 +69,11 @@ void TimedPulse::coilFired()
     usecT = mSparkusec.read_us(); //1,000,000 [uSec/rev]
     mSparkusec.reset();
     mSparkusec.start();
+}
+void TimedPulse::setWastedSpark(bool wasted)
+{
+    // set true for a wasted spark engine
+    mWastedSpark = wasted;
 }
 
 /***********************************************************

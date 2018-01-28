@@ -41,6 +41,7 @@ class TimedPulse: public EngineSpeed
         TimedPulse(PinName);
         uint16_t getEngineSpeed();
         void setFakeData(bool);
+        void setWastedSpark(bool);
 };
 
 class FrequencyToVoltage: public EngineSpeed

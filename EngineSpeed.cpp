@@ -22,6 +22,7 @@ TimedPulse::TimedPulse(PinName pin):EngineSpeed(pin),mPrimaryCoil(pin)
      // assign the physical primary coil pin to the interrupt
     mPrimaryCoil.rise(callback(this, &TimedPulse::coilFired)); // attach increment function of this counter instance
     mSparkusec.start(); //start the timer
+    mWastedSpark=false; //todo put this in NVM flash
 }
 void TimedPulse::setFakeData(bool fake){mFakeData=fake;}
 
@@ -41,7 +42,6 @@ uint16_t TimedPulse::getEngineSpeed()
 
 void TimedPulse::acquire()
 {
-    //TODO cope with no rising edge (engine off!)
     //overrides the virtual acquire method set out in the base class
     if (mSparkusec.read_us()>1000000)
     {
@@ -50,7 +50,15 @@ void TimedPulse::acquire()
     }
     else 
     {
-        mRevs = 30000000/usecT;
+        int numerator;
+        if(mWastedSpark)
+        {
+            numerator=30000000;
+        }
+        else{
+            numerator=60000000;
+        }
+        mRevs = numerator/usecT;
     } 
     //TODO deal with timer wrap...
 }

@@ -30,7 +30,7 @@ class TimedPulse: public EngineSpeed
         InterruptIn mPrimaryCoil;
         Timer mSparkusec; // timer for spark events
         int usecT; //time between engine spark events
-        
+        bool mWastedSpark; //wasted spark fires the plug on exhaust stroke as well!
         bool mFakeData;
     
     private: //class methods

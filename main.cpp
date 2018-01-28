@@ -24,7 +24,7 @@ Serial bt(PA_9, PA_10, 9600); //Out to BT module
 
 void configureBTModule(Serial &pc, Serial &bt)
 {
-    if(CAL_TACHO){setupCalibration((int) 5);}
+    if(CAL_TACHO){setupCalibration(50);} //ms
     //DigitalOut  onBoardLED(LED1);
     bt.baud(9600);
     /* configure the CC41-A bluetooth module*/

@@ -50,7 +50,6 @@ PROJECT := Carb-Scan
 OBJECTS += CalibrateTacho.o
 OBJECTS += EngineSpeed.o
 OBJECTS += LambdaSensor.o
-#OBJECTS += acquireVals.o
 OBJECTS += main.o
 OBJECTS += mbed-STM32F103C8T6/SysClockConf.o
 OBJECTS += PressureSensor.o

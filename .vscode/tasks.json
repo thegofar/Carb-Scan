@@ -25,6 +25,6 @@
         "command": "make"
     },
     "windows": {
-        "command": "make.exe"
+        "command": "mingw32-make.exe"
     }
 }

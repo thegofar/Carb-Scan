@@ -45,7 +45,7 @@
                 "debugServerPath": "pyocd-gdbserver"
             },
             "windows": {
-                "preLaunchTask": "make.exe",
+                "preLaunchTask": "mingw32-make.exe",
                 "MIMode": "gdb",
                 "MIDebuggerPath": "C:\\Program Files (x86)\\GNU Tools ARM Embedded\\4.9 2015q3\\bin\\arm-none-eabi-gdb.exe",
                 "debugServerPath": "" ,

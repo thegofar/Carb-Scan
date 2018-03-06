@@ -76,7 +76,6 @@ int main()
 
     while(1) 
     {   
-        //wait_us(5);
         if(sendOverBT)
         {
             sendOverBT=false;
@@ -108,17 +107,12 @@ void packData(char btData[])
     else
     {
         rpmTim = timedPulse.getEngineSpeed();
-
-        //map = mapSensor.getAvgPressure();
+       //map = mapSensor.getAvgPressure();
         map=5;
-
         //mapI = mapSensor.getPressure();
         mapI=2;
-
         tS = timeStamp;
-
-        lam = narrowLambda1.getFixedPtVolts();
-        
+        lam = narrowLambda1.getFixedPtVolts();       
         rpmLm=lmChip.getEngineSpeed();
     }
     

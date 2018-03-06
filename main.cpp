@@ -8,9 +8,9 @@
 Ticker ms_tick;
 Ticker hundredMs_tick;
 
-bool sendOverBT=false;
+volatile bool sendOverBT=false; //set in an interrupt
 
-unsigned int timeStamp = 0;
+volatile unsigned int timeStamp = 0;
 DigitalOut  onBoardLED(LED1);
 
 //these values are currently acquired in the pack data routine!
@@ -76,7 +76,7 @@ int main()
 
     while(1) 
     {   
-        wait_us(5);
+        //wait_us(5);
         if(sendOverBT)
         {
             sendOverBT=false;

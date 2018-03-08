@@ -13,11 +13,11 @@ volatile bool sendOverBT=false; //set in an interrupt
 volatile unsigned int timeStamp = 0;
 DigitalOut  onBoardLED(LED1);
 
-//these values are currently acquired in the pack data routine!
 LambdaSensor narrowLambda1(PA_0); 
 TimedPulse timedPulse(PB_15);
-FrequencyToVoltage lmChip(PB_1,4087,0);
-//PressureSensor mapSensor(PB_0);
+//FrequencyToVoltage lmChip(PB_1,4087,0);
+PressureSensor mapSensor(PB_0);
+
 
 Serial pc(PA_2, PA_3, 9600); //Out to FTDI
 Serial bt(PA_9, PA_10, 9600); //Out to BT module
@@ -56,7 +56,7 @@ void milliSecTask(void)
 void hundredMilliSecTask(void)
 {
 /*********************************************************************
-* This function is called every millisecond, keep all computation in 
+* This function is called every hundred millisecond, keep all computation in 
 * this IRQ context minimal to avoid blocking the user context 'main'
 **********************************************************************/
     sendOverBT = true;
@@ -67,7 +67,7 @@ int main()
     confSysClock();     //Configure system clock (72MHz HSE clock, 48MHz USB clock)    
     configureBTModule(pc,bt);
     onBoardLED=LED_OFF;
-
+    mapSensor.initAutoAcquireIRQ();
     /******************************************
      * Configure the various tasks
      * ***************************************/
@@ -107,13 +107,12 @@ void packData(char btData[])
     else
     {
         rpmTim = timedPulse.getEngineSpeed();
-       //map = mapSensor.getAvgPressure();
-        map=5;
-        //mapI = mapSensor.getPressure();
-        mapI=2;
+        map = mapSensor.getAvgPressure();
+        mapI = mapSensor.getPressure();
         tS = timeStamp;
-        lam = narrowLambda1.getFixedPtVolts();       
-        rpmLm=lmChip.getEngineSpeed();
+        lam = narrowLambda1.getFixedPtVolts();  
+        rpmLm=0xf07f; //61567     
+       // rpmLm=lmChip.getEngineSpeed();
     }
     
     btData[0] = 0x2; //<STX>

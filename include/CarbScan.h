@@ -16,6 +16,11 @@
 #define DEBUG_PC 0 // set to 1 if you want serial data on the FTDI USB interface also
 #define DUMMY_BT_DATA 0
 
+#define ONE_KHZ_IN_USEC 1000
+#define HUNDRED_HZ_IN_USEC 10000
+#define TEN_HZ_IN_USEC 100000
+#define ONE_HZ_IN_USEC 1000000
+
 void packData(char btData[]);
 void setupCalibration(int msPeriod);
 #endif

@@ -1,11 +1,13 @@
 #ifndef PRESSURESENSOR_H
 #define PRESSURESENSOR_H
 #include "mbed.h"
+#include "CarbScan.h"
 
 class PressureSensor
 {
 public:
-    PressureSensor(PinName p,char avgSampleCnt=50);
+    PressureSensor(PinName,char avgSampleCnt=50);
+    void initAutoAcquireIRQ();
     uint16_t getPressure();
     uint16_t getAvgPressure();
     void setMapGain(float gain);
@@ -20,11 +22,13 @@ protected:
     char mSampleCount;
     float mMapGain;
     float mMapOffset;
-    AnalogIn mPressureAnalogue;
-    Ticker mTick; //use this to repeatedly call the acquire routine
-
-    void acquire();
-    void autoAcquire();
+    PinName mPinPressureAnalogue; //This is the interface to the hardware (analogue input)
+    volatile int dummyAcquire;
     void rollAvg();
+    Ticker mTick; //use this to repeatedly call the acquire routine
+    void autoAcquire(void);
+public:
+    
+    
 };
 #endif

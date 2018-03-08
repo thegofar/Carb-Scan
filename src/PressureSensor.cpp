@@ -1,26 +1,30 @@
 #include "PressureSensor.h"
  
-PressureSensor::PressureSensor(PinName pin, char samplecount) : mPressureAnalogue(pin)
+PressureSensor::PressureSensor(PinName p, char samplecount) 
 {
     /* -- calibration points -- */
+    mPinPressureAnalogue=p;
     mMapGain = 3297.6; //3146.7*(1027/980);
     mMapOffset = -21.836;
     mSampleCount=samplecount;
-    mTick.attach_us(callback(this,&PressureSensor::autoAcquire),10000);  //100 is 1khz
+    //initAutoAcquireIRQ(); //do not do this, call this after construction is complete (from main)
+}
+
+void PressureSensor::initAutoAcquireIRQ()
+{
+    mTick.attach_us(Callback<void()>(this,&PressureSensor::autoAcquire),ONE_KHZ_IN_USEC);
 }
 
 uint16_t PressureSensor::getPressure()
 {
-    acquire();
-    rollAvg(); // do the averaging every time we get the pressure
+    //acquisition is handled by the IRQ timer mTick
     return mPressure;
 }
 uint16_t PressureSensor::getAvgPressure()
 {
-    //this will only be meaningful provided we have been calling 'getPressure' periodically
+    // the roll avg routine is auto called by the IRQ timer mTick
     return (uint16_t)mAvgPressure;
 }
-
 
 void PressureSensor::setMapGain(float gain){mMapGain = gain;}
 void PressureSensor::setMapOffset(float off){mMapOffset=off;}
@@ -29,20 +33,11 @@ void PressureSensor::setSampleCount(char cnt){mSampleCount=cnt;}
 
 void PressureSensor::autoAcquire()
 {
+    //dummyAcquire++;
     //this is called by the 1khz ticker
-    mPressure = ((mPressureAnalogue.read() *  mMapGain) + mMapOffset); // mbar
-}
-
-void PressureSensor::acquire()
-{
-    int samples = 10;
-    float raw=0;
-    for(char i=0; i<samples; i++)
-    {
-        raw +=mPressureAnalogue.read();
-    }
-    raw=raw/samples;
-    mPressure = ((raw *  mMapGain) + mMapOffset); // mbar
+    AnalogIn aIn(mPinPressureAnalogue);
+    mPressure = ((aIn.read() *  mMapGain) + mMapOffset); // mbar
+    rollAvg();
 }
 
 void PressureSensor::rollAvg() 

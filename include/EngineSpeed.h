@@ -10,12 +10,10 @@ private: //class members
 protected: // allow derived classes to access this
     uint16_t mRevs;
 
-private:
-// private methods
+private: //methods
     virtual void acquire();
 
-public:
-// public methods
+public: //methods
     EngineSpeed(PinName);
     virtual uint16_t getEngineSpeed();
     PinName getPin();

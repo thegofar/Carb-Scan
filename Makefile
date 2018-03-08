@@ -47,12 +47,12 @@ PROJECT := Carb-Scan
 ###############################################################################
 # Objects and Paths
 
-OBJECTS += CalibrateTacho.o
-OBJECTS += EngineSpeed.o
-OBJECTS += LambdaSensor.o
-OBJECTS += main.o
+OBJECTS += src/CalibrateTacho.o
+OBJECTS += src/EngineSpeed.o
+OBJECTS += src/LambdaSensor.o
+OBJECTS += src/main.o
+OBJECTS += src/PressureSensor.o
 OBJECTS += mbed-STM32F103C8T6/SysClockConf.o
-OBJECTS += PressureSensor.o
 
  SYS_OBJECTS += mbed/TARGET_NUCLEO_F103RB/TOOLCHAIN_GCC_ARM/stm32f1xx_hal_smartcard.o
  SYS_OBJECTS += mbed/TARGET_NUCLEO_F103RB/TOOLCHAIN_GCC_ARM/PeripheralPins.o
@@ -158,6 +158,8 @@ INCLUDE_PATHS += -I../mbed/TARGET_NUCLEO_F103RB/TOOLCHAIN_GCC_ARM
 INCLUDE_PATHS += -I../mbed/drivers
 INCLUDE_PATHS += -I../mbed/hal
 INCLUDE_PATHS += -I../mbed/platform
+INCLUDE_PATHS += -I../include
+INCLUDE_PATHS += -I../src
 
 LIBRARY_PATHS := -L../mbed/TARGET_NUCLEO_F103RB/TOOLCHAIN_GCC_ARM 
 LIBRARIES := -lmbed 

@@ -1,9 +1,10 @@
 #include "EngineSpeed.h"
 #include "mbed.h"
 
-EngineSpeed::EngineSpeed(PinName pin)
+EngineSpeed::EngineSpeed(PinName pin, int redline)
 {
     mPin = pin;
+    mRedLine = redline;
 }
 uint16_t EngineSpeed::getEngineSpeed()
 {
@@ -17,12 +18,21 @@ PinName EngineSpeed::getPin()
 /***********************************************************
  * Derived Class TimedPulse
  * ***************************************************/
-TimedPulse::TimedPulse(PinName pin):EngineSpeed(pin),mPrimaryCoil(pin)
+TimedPulse::TimedPulse(PinName pin,int redline):EngineSpeed(pin,redline),mPrimaryCoil(pin)
 {
      // assign the physical primary coil pin to the interrupt
     mPrimaryCoil.rise(callback(this, &TimedPulse::coilFired)); // attach increment function of this counter instance
     mSparkusec.start(); //start the timer
     mWastedSpark=false; //todo put this in NVM flash
+    if(mWastedSpark)
+    {
+        mMinimumAllowableDwell = 30000000/mRedLine;  //eg. 30000000/14000 = 2142
+    }
+    else
+    {
+        mMinimumAllowableDwell = 60000000/mRedLine;
+    }
+    
 }
 void TimedPulse::setFakeData(bool fake){mFakeData=fake;}
 
@@ -65,10 +75,19 @@ void TimedPulse::acquire()
 void TimedPulse::coilFired()
 {
     // this is called on the rising edge of the primary coil firing
-    mSparkusec.stop();
-    usecT = mSparkusec.read_us(); //1,000,000 [uSec/rev]
-    mSparkusec.reset();
-    mSparkusec.start();
+    int tmpusecT = mSparkusec.read_us(); //1,000,000 [uSec/rev]
+    if(tmpusecT< mMinimumAllowableDwell)
+    {
+        // this might be the primary ringing? induced emf noise? etc...
+        // continue waiting for a genuine spark event
+    }
+    else
+    {
+        usecT = tmpusecT;
+        mSparkusec.stop();
+        mSparkusec.reset();
+        mSparkusec.start();
+    }
 }
 void TimedPulse::setWastedSpark(bool wasted)
 {

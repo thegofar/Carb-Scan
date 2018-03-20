@@ -9,7 +9,8 @@ class LambdaSensor {
 private:
     bool mFakeData; //used to simulate a signal of stoich
     PinName mAI; //This is the interface to the hardware (analogue input)
-    double mSensorVolts, mLambdaDbl;
+    float mSensorVolts;
+    double mLambdaDbl;
     LamState mMixture;
     Sensor mSensor;
         
@@ -17,6 +18,7 @@ public:
     LambdaSensor(PinName pin, Sensor sensor=SINGLE_WIRE, bool fake=false);
     void setSensor(Sensor sensor);
     char getFixedPtVolts();
+    void setFakeData(bool);
     
 private:
     void acquire();

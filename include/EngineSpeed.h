@@ -6,15 +6,17 @@ class EngineSpeed
 {
 private: //class members
     PinName mPin;
+    
 
 protected: // allow derived classes to access this
     uint16_t mRevs;
+    int mRedLine;
 
 private: //methods
     virtual void acquire();
 
 public: //methods
-    EngineSpeed(PinName);
+    EngineSpeed(PinName,int redline = 12500);
     virtual uint16_t getEngineSpeed();
     PinName getPin();
 };
@@ -30,13 +32,14 @@ class TimedPulse: public EngineSpeed
         int usecT; //time between engine spark events
         bool mWastedSpark; //wasted spark fires the plug on exhaust stroke as well!
         bool mFakeData;
+        int mMinimumAllowableDwell;
     
     private: //class methods
         void coilFired(); // interrupt routine
         void acquire();
     
     public: //public class methods
-        TimedPulse(PinName);
+        TimedPulse(PinName, int redline=12500);
         uint16_t getEngineSpeed();
         void setFakeData(bool);
         void setWastedSpark(bool);

@@ -14,7 +14,8 @@ volatile unsigned int timeStamp = 0;
 DigitalOut  onBoardLED(LED1);
 
 LambdaSensor narrowLambda1(PA_0); 
-TimedPulse timedPulse(PB_15);
+
+TimedPulse timedPulse(PB_15,RED_LINE_RPM);
 //FrequencyToVoltage lmChip(PB_1,4087,0);
 PressureSensor mapSensor(PB_0);
 
@@ -33,6 +34,7 @@ void configureBTModule(Serial &pc, Serial &bt)
 }
 void sendBTData(Serial &bt, Serial &pc)
 {
+    narrowLambda1.setFakeData(false);
     char sendOverBt[21]; // we are limited to 20 bytes for a BLE transaction (21 when you include the \n)
     packData(sendOverBt); // pack the data efficiently into this array to be sent over BT
     for(int i = 0; i<20; i++)

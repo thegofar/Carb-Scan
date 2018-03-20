@@ -2,13 +2,19 @@
 #include "stm32f103c8t6.h"
 #include "mbed.h"
 
-const static double vref = 3.3;
+const static float vref = 3.3;
 
 LambdaSensor :: LambdaSensor(PinName pin, Sensor sensor,  bool fake)
 {
     mSensor = sensor;
     mFakeData = fake;
     mAI = pin;
+    mSensorVolts=0.0;
+}
+
+void LambdaSensor::setFakeData(bool fake)
+{
+    mFakeData=fake;
 }
 
 void LambdaSensor :: acquire()
@@ -32,7 +38,11 @@ void LambdaSensor :: acquire()
          ***************************/
         if(mFakeData)
         {
-            mSensorVolts=0.45;
+            if(mSensorVolts >=0.3)
+            {
+                mSensorVolts=0;
+            }
+            else{mSensorVolts=mSensorVolts+0.001;}
         }
         else
         { 
@@ -70,8 +80,7 @@ char LambdaSensor :: getFixedPtVolts()
     ******************************************************************/
     acquire(); //gets the latest values from the sensor
     if(mSensorVolts > 1) {mSensorVolts=1;} // constrain to a maximum of 1 volt
-    char v=(char)mSensorVolts*0xFF; //Apply the fixed point scaling
-    return v;
+    return mSensorVolts*0xFF; //Apply the fixed point scaling
 }
 void LambdaSensor :: setSensor(Sensor sensor)
 {
